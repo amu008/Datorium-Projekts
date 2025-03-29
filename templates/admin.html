@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin sadaļa</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; }
+        .flash-message { padding: 10px; border-radius: 5px; margin-bottom: 10px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .danger { background-color: #f8d7da; color: #721c24; }
+        .delete-btn { background-color: #dc3545; color: white; padding: 5px 10px; border: none; cursor: pointer; }
+        .delete-btn:hover { background-color: #c82333; }
+    </style>
+</head>
+<body>
+
+    <p>Back to <a href ="/">Main</a></p>
+
+    <h2>Upload CSV Files</h2>
+
+    <!-- kļūdu un veiksmes paziņojumi -->
+     <!-- pašas kļūdas ir start_me.py failā - veiksmīga ielāde vai nepareizs faila formāts -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+<!-- ielādes forma -->
+
+    <form method="post" enctype="multipart/form-data">
+        <label for="team_list">Team List:</label>
+        <input type="file" name="team_list" accept=".csv"><br><br>
+
+        <label for="team_splits">Team Splits:</label>
+        <input type="file" name="team_splits" accept=".csv"><br><br>
+
+        <label for="coordinates">Coordinates:</label>
+        <input type="file" name="coord2" accept=".csv"><br><br>
+
+        <button type="submit">Upload</button>
+
+    </form>
+
+<!-- dzēšanas formas daļa-->
+
+<h3>Manage Uploaded CSVs</h3>
+<ul>
+    {% for file, exists in files.items() %}
+        {% if exists %}
+            <li>
+                {{ file }}
+                <form method="post" action="{{ url_for('delete_file', filename=file) }}" style="display:inline;">
+                    <button type="submit" class="delete-btn">🗑 Delete</button>
+                </form>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+
+</body>
+</html>
